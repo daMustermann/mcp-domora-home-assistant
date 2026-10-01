@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.DS_Store
+.idea/
+.vscode/
+
+# Dev instance: keep the scripts and the seed config, never the runtime state or secrets
+dev/.token
+dev/.refresh
+dev/config/.storage/
+dev/config/.cloud/
+dev/config/deps/
+dev/config/tts/
+dev/config/backups/
+dev/config/blueprints/
+dev/config/www/
+dev/config/image/
+dev/config/*.log*
+dev/config/*.db*
+dev/config/*.db-*
+dev/config/.HA_VERSION
+dev/config/.uuid
+dev/config/secrets.yaml
+dev/config/custom_components/
+dev/config/.ha_run.lock

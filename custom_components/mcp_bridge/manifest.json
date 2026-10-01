@@ -1,0 +1,15 @@
+{
+  "domain": "mcp_bridge",
+  "name": "MCP Bridge",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": ["http", "auth", "api", "websocket_api", "config", "device_automation"],
+  "after_dependencies": ["recorder", "history", "logbook", "lovelace", "hassio", "backup", "repairs"],
+  "documentation": "https://github.com/mkenfenheuer/claude-mcp-homeassistant",
+  "integration_type": "service",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/mkenfenheuer/claude-mcp-homeassistant/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "0.1.0"
+}

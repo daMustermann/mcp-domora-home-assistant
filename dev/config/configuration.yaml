@@ -1,0 +1,19 @@
+default_config:
+
+logger:
+  default: warning
+  logs:
+    custom_components.mcp_bridge: debug
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+input_boolean:
+  dev_flag:
+    name: Dev Flag
+
+template:
+  - sensor:
+      - name: Dev Counter
+        state: "{{ now().second }}"
