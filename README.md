@@ -1,9 +1,13 @@
-# MCP Bridge für Home Assistant
+# MCP Domora für Home Assistant
+
+Deutsch · [English](README.en.md)
 
 Verbinde Home Assistant mit Codex und anderen MCP-Clients – direkt über deine eigene Home-Assistant-Instanz. Der Agent kann Zustände lesen, Geräte steuern, Automationen bearbeiten, Backups verwalten und bei der erneuten Anmeldung von Integrationen helfen.
 
-> **Status:** Version 0.2.0 · Home Assistant 2026.10 oder neuer · MIT-Lizenz
+> **Status:** Version 0.3.0 · Home Assistant 2026.10 oder neuer · MIT-Lizenz
 > Die Verbindung, OAuth und das Erstellen eines Backups wurden mit Home Assistant Core 2026.10.4 in einer getrennten Testinstanz geprüft. Eine Wiederherstellung auf HAOS und die Anmeldeflüsse einzelner Cloud-Anbieter sind noch nicht Ende zu Ende getestet.
+
+Änderungen pro Version stehen im [Changelog](CHANGELOG.md); veröffentlichte Versionen findest du unter [GitHub Releases](https://github.com/daMustermann/mcp-homeassistant/releases).
 
 ## Möglichkeiten
 
@@ -17,7 +21,7 @@ Verbinde Home Assistant mit Codex und anderen MCP-Clients – direkt über deine
 | Anmeldung | Re-Authentifizierungsflows bestehender Integrationen starten und fortsetzen |
 | Erweiterte Funktionen | Templates auswerten und Home Assistants WebSocket-API verwenden |
 
-Welche Toolgruppen und einzelnen Tools zur Verfügung stehen, lässt sich in den Integrationsoptionen auswählen. MCP Bridge unterstützt Streamable HTTP und den älteren HTTP/SSE-Transport.
+Welche Toolgruppen und einzelnen Tools zur Verfügung stehen, lässt sich in den Integrationsoptionen auswählen. MCP Domora unterstützt Streamable HTTP und den älteren HTTP/SSE-Transport.
 
 ## Voraussetzungen
 
@@ -26,7 +30,7 @@ Welche Toolgruppen und einzelnen Tools zur Verfügung stehen, lässt sich in den
 - Ein MCP-Client, der Home Assistant über das Netzwerk erreichen kann.
 - Für HACS: eine veröffentlichte Version dieses Repositories und eine installierte HACS-Integration.
 
-Der Server läuft **innerhalb von Home Assistant Core**. Wenn Core nicht erreichbar ist, ist auch MCP Bridge nicht erreichbar. Ein Backup ist eine Home-Assistant-Sicherung der ausgewählten Inhalte, kein atomarer VM- oder Datenträger-Snapshot.
+Der Server läuft **innerhalb von Home Assistant Core**. Wenn Core nicht erreichbar ist, ist auch MCP Domora nicht erreichbar. Ein Backup ist eine Home-Assistant-Sicherung der ausgewählten Inhalte, kein atomarer VM- oder Datenträger-Snapshot.
 
 ## Installation
 
@@ -34,16 +38,16 @@ Der Server läuft **innerhalb von Home Assistant Core**. Wenn Core nicht erreich
 
 1. In HACS das Menü **⋮ → Benutzerdefinierte Repositories** öffnen.
 2. `https://github.com/daMustermann/mcp-homeassistant` als Repository hinzufügen und die Kategorie **Integration** wählen.
-3. **MCP Bridge** installieren und Home Assistant neu starten.
-4. Unter **Einstellungen → Geräte & Dienste → Integration hinzufügen** nach **MCP Bridge** suchen und die Einrichtung abschließen.
+3. **MCP Domora** installieren und Home Assistant neu starten.
+4. Unter **Einstellungen → Geräte & Dienste → Integration hinzufügen** nach **MCP Domora** suchen und die Einrichtung abschließen.
 
 HACS lädt den auf GitHub veröffentlichten Stand. Lokale Änderungen erscheinen dort erst, nachdem sie in das Repository übertragen wurden. Falls HACS noch keine passende veröffentlichte Version anbietet, die manuelle Installation verwenden.
 
 ### Manuell
 
-1. Den Ordner `custom_components/mcp_bridge` aus diesem Repository nach `/config/custom_components/mcp_bridge` auf dem Home-Assistant-System kopieren.
+1. Den Ordner `custom_components/mcp_domora` aus diesem Repository nach `/config/custom_components/mcp_domora` auf dem Home-Assistant-System kopieren.
 2. Home Assistant neu starten.
-3. Unter **Einstellungen → Geräte & Dienste → Integration hinzufügen** **MCP Bridge** hinzufügen.
+3. Unter **Einstellungen → Geräte & Dienste → Integration hinzufügen** **MCP Domora** hinzufügen.
 
 Bei einem Update den Integrationsordner ersetzen und Home Assistant neu starten. Die Home-Assistant-Daten unter `/config/.storage` gehören nicht zum Integrationsordner und bleiben erhalten.
 
@@ -52,14 +56,14 @@ Bei einem Update den Integrationsordner ersetzen und Home Assistant neu starten.
 Die MCP-Adresse lautet für eine lokale Installation beispielsweise:
 
 ```text
-http://homeassistant:8123/mcp_bridge/mcp
+http://homeassistant:8123/mcp_domora/mcp
 ```
 
 In einem Terminal mit installierter Codex CLI:
 
 ```bash
-codex mcp add home-assistant --url http://homeassistant:8123/mcp_bridge/mcp
-codex mcp login home-assistant
+codex mcp add domora --url http://homeassistant:8123/mcp_domora/mcp
+codex mcp login domora
 codex mcp list
 ```
 
@@ -68,8 +72,8 @@ Beim Login öffnet Codex den Home-Assistant-Anmeldefluss. Die Verbindung funktio
 Bei Problemen mit der Anmeldung kann alternativ ein langlebiges Home-Assistant-Zugriffstoken als Bearer-Token verwendet werden. Codex kann es aus einer Umgebungsvariable lesen:
 
 ```toml
-[mcp_servers.home-assistant]
-url = "http://homeassistant:8123/mcp_bridge/mcp"
+[mcp_servers.domora]
+url = "http://homeassistant:8123/mcp_domora/mcp"
 bearer_token_env_var = "HOME_ASSISTANT_TOKEN"
 ```
 
@@ -90,11 +94,11 @@ Der Agent erhält die Anweisung, vor größeren Änderungen eine geeignete Siche
 
 `list_integrations` zeigt bestehende Integrationen. Mit `start_reauthentication` kann ein dafür unterstützter Re-Authentifizierungsflow gestartet werden; `continue_flow` führt durch die nächsten Schritte. Ist bereits ein Flow aktiv, zeigt `list_flows_in_progress` dessen ID.
 
-OAuth-Anmeldung, E-Mail-Code, MFA oder eine Bestätigung beim Anbieter können weitere Schritte erfordern. Der Agent kann dafür separat verfügbare Browser- oder E-Mail-Werkzeuge verwenden oder dich um Hilfe bitten. MCP Bridge enthält selbst keinen E-Mail-Client und keine automatische Anbieteranmeldung. Ob und wie das bei Home Connect, Dreame, Tuya oder Xiaomi funktioniert, hängt von der jeweiligen Integration und dem Anbieter ab.
+OAuth-Anmeldung, E-Mail-Code, MFA oder eine Bestätigung beim Anbieter können weitere Schritte erfordern. Der Agent kann dafür separat verfügbare Browser- oder E-Mail-Werkzeuge verwenden oder dich um Hilfe bitten. MCP Domora enthält selbst keinen E-Mail-Client und keine automatische Anbieteranmeldung. Ob und wie das bei Home Connect, Dreame, Tuya oder Xiaomi funktioniert, hängt von der jeweiligen Integration und dem Anbieter ab.
 
 ## Konfiguration
 
-Unter **Einstellungen → Geräte & Dienste → MCP Bridge → Konfigurieren** findest du:
+Unter **Einstellungen → Geräte & Dienste → MCP Domora → Konfigurieren** findest du:
 
 - **Toolgruppen und einzelne Tools:** Funktionen ausblenden oder zulassen.
 - **Entity exposure:** Entitäten nach Domain, Entity, Bereich oder Label filtern.
@@ -105,7 +109,7 @@ Zum Kennenlernen ist der Schreibschutz ein guter Start. Beachte: Entity-Filter g
 
 ## Fehlerbehebung
 
-- **404 am MCP-Endpunkt:** Prüfen, ob der Ordner richtig liegt, Home Assistant nach der Installation neu gestartet wurde und MCP Bridge unter Geräte & Dienste eingerichtet ist.
+- **404 am MCP-Endpunkt:** Prüfen, ob der Ordner richtig liegt, Home Assistant nach der Installation neu gestartet wurde und MCP Domora unter Geräte & Dienste eingerichtet ist.
 - **Anmeldung funktioniert nicht:** Prüfen, ob der Client den verwendeten Hostnamen erreicht und ob der OAuth-Callback des Clients erreichbar ist. Bei Reverse-Proxies müssen Home Assistants Proxy-Einstellungen zum Aufbau passen.
 - **Tool fehlt:** Toolgruppe, einzelne Tools, Schreibschutz und Administratorstatus in den Optionen prüfen. Einige Funktionen benötigen Supervisor oder weitere Home-Assistant-Integrationen.
 - **Backup nicht sichtbar:** Der Auftrag läuft möglicherweise noch oder der gewählte Speicherort hat einen Fehler gemeldet. `list_backups` und `get_backup_details` prüfen.
@@ -113,7 +117,7 @@ Zum Kennenlernen ist der Schreibschutz ein guter Start. Beachte: Entity-Filter g
 
 ## Entwicklung und Tests
 
-Die Integration liegt unter `custom_components/mcp_bridge/`; `dev/scripts/` enthält MCP-, OAuth- und PKCE-Tests. Die lokalen Tests ohne Home Assistant laufen mit:
+Die Integration liegt unter `custom_components/mcp_domora/`; `dev/scripts/` enthält Entwicklungs- und Testscripts für eine separate Testinstanz. Einige davon verändern oder löschen Home-Assistant-Konfiguration und dürfen nicht gegen ein Produktivsystem ausgeführt werden. Einzelheiten stehen in der [Script-Anleitung](dev/scripts/README.md). Die lokalen Tests ohne Home Assistant laufen mit:
 
 ```bash
 python -m unittest discover -s tests

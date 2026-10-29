@@ -204,7 +204,7 @@ class MCPServer:
                 "logging": {},
             },
             "serverInfo": {
-                "name": "home-assistant-mcp-bridge",
+                "name": "mcp-domora",
                 "title": f"{NAME} for Home Assistant",
                 "version": SERVER_VERSION,
             },

@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock
 
-SOURCE = Path(__file__).parents[1] / "custom_components/mcp_bridge/tools/supervisor.py"
+SOURCE = Path(__file__).parents[1] / "custom_components/mcp_domora/tools/supervisor.py"
 tree = ast.parse(SOURCE.read_text(encoding="utf-8"))
 functions = [node for node in tree.body if isinstance(node, ast.AsyncFunctionDef) and node.name in {"create_backup", "restore_backup"}]
 for node in functions:

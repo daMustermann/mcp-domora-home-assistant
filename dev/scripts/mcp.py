@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Minimal MCP client for driving the dev server."""
-import json, sys, urllib.request, pathlib
+import json, os, sys, urllib.request, pathlib
 
-BASE = "http://localhost:8123"
-ENDPOINT = f"{BASE}/mcp_bridge/mcp"
+BASE = os.environ.get("BASE", "http://localhost:8123").rstrip("/")
+ENDPOINT = f"{BASE}/mcp_domora/mcp"
 DIR = pathlib.Path(__file__).parent.parent
 SESSION = {"id": None}
 
@@ -22,15 +22,25 @@ def _refresh():
     return token
 
 
-TOKEN = _refresh()
+TOKEN = None
+
+
+def get_token():
+    """Refresh on first use, not when this module is imported."""
+    global TOKEN
+    if TOKEN is None:
+        TOKEN = _refresh()
+    return TOKEN
 
 
 def rpc(method, params=None, _id=[0]):
     _id[0] += 1
-    body = json.dumps({"jsonrpc": "2.0", "id": _id[0], "method": method,
-                       "params": params or {}}).encode()
+    message = {"jsonrpc": "2.0", "method": method, "params": params or {}}
+    if not method.startswith("notifications/"):
+        message["id"] = _id[0]
+    body = json.dumps(message).encode()
     headers = {"Content-Type": "application/json", "Accept": "application/json",
-               "Authorization": f"Bearer {TOKEN}"}
+               "Authorization": f"Bearer {get_token()}"}
     if SESSION["id"]:
         headers["Mcp-Session-Id"] = SESSION["id"]
     req = urllib.request.Request(ENDPOINT, data=body, headers=headers, method="POST")
@@ -50,7 +60,7 @@ def call(name, args=None):
         return out
     result = out["result"]
     text = result["content"][0]["text"] if result.get("content") else ""
-    return {"isError": result.get("isError"), "text": text[:2500]}
+    return {"isError": result.get("isError"), "text": text}
 
 
 if __name__ == "__main__":

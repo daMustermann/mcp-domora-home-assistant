@@ -1,4 +1,4 @@
-"""MCP Bridge: a Model Context Protocol server for Home Assistant.
+"""MCP Domora: a Model Context Protocol server for Home Assistant.
 
 Exposes Home Assistant to MCP clients over Streamable HTTP with OAuth 2.1 /
 IndieAuth authentication, and gives them tools for everything from reading states to
@@ -170,24 +170,24 @@ class BridgeRuntime:
         if tool.admin and not user.is_admin:
             return f"{tool.name} needs a Home Assistant administrator account."
         if tool.name in set(options.get(CONF_DISABLED_TOOLS) or ()):
-            return f"{tool.name} is switched off in the MCP Bridge options."
+            return f"{tool.name} is switched off in the MCP Domora options."
         if tool.group not in set(options.get(CONF_TOOL_GROUPS, DEFAULT_TOOL_GROUPS)):
             return (
                 f"{tool.name} belongs to the {tool.group!r} tool group, which is not "
-                "enabled in the MCP Bridge options."
+                "enabled in the MCP Domora options."
             )
         if tool.write and options.get(CONF_READ_ONLY, False):
             return f"{tool.name} changes things, and this MCP server is in read-only mode."
         if tool.dangerous and not options.get(CONF_ALLOW_DANGEROUS, False):
             return (
                 f"{tool.name} is a disruptive tool and is disabled. The user can enable "
-                '"allow disruptive tools" in the MCP Bridge options.'
+                '"allow disruptive tools" in the MCP Domora options.'
             )
         return f"{tool.name} is not available."
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up the MCP Bridge."""
+    """Set up the MCP Domora."""
     runtime = BridgeRuntime(hass, entry)
     await runtime.async_setup()
     hass.data[DOMAIN] = runtime
@@ -200,17 +200,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[VIEWS_KEY] = True
         for view in (*AUTH_VIEWS, *MCP_VIEWS):
             hass.http.register_view(view())
-        _LOGGER.debug("Registered %d MCP Bridge views", len(AUTH_VIEWS) + len(MCP_VIEWS))
+        _LOGGER.debug("Registered %d MCP Domora views", len(AUTH_VIEWS) + len(MCP_VIEWS))
 
     entry.async_on_unload(entry.add_update_listener(_async_reload_entry))
     _LOGGER.info(
-        "MCP Bridge ready: %d tools available at %s", len(all_tools()), MCP_PATH
+        "MCP Domora ready: %d tools available at %s", len(all_tools()), MCP_PATH
     )
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload the MCP Bridge."""
+    """Unload the MCP Domora."""
     runtime: BridgeRuntime | None = hass.data.pop(DOMAIN, None)
     if runtime is not None:
         runtime.async_shutdown()

@@ -3,7 +3,7 @@ default_config:
 logger:
   default: warning
   logs:
-    custom_components.mcp_bridge: debug
+    custom_components.mcp_domora: debug
 
 automation: !include automations.yaml
 script: !include scripts.yaml

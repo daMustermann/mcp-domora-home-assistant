@@ -2,18 +2,18 @@
   "config": {
     "step": {
       "user": {
-        "title": "MCP Bridge",
+        "title": "MCP Domora",
         "description": "Expose Home Assistant to MCP clients such as Claude, ChatGPT or an IDE assistant.\n\nAfter setup, point your client at:\n\n`{url}`\n\nThe client will ask you to sign in to Home Assistant and approve the connection. You can then choose which tools and which entities it may reach under **Configure**."
       }
     },
     "abort": {
-      "single_instance_allowed": "MCP Bridge is already set up. Open its options to change what it exposes."
+      "single_instance_allowed": "MCP Domora is already set up. Open its options to change what it exposes."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "MCP Bridge",
+        "title": "MCP Domora",
         "description": "Server URL: `{url}`",
         "menu_options": {
           "tool_groups": "Tool groups",
@@ -70,7 +70,7 @@
       }
     },
     "abort": {
-      "not_loaded": "MCP Bridge is not running. Reload the integration and try again."
+      "not_loaded": "MCP Domora is not running. Reload the integration and try again."
     }
   }
 }

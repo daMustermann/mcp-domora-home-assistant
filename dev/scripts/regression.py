@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Exercise every tool group and report pass/fail."""
 import json, sys, pathlib
+if "--allow-write" not in sys.argv:
+    raise SystemExit("This test creates, modifies and deletes Home Assistant configuration. "
+                     "Use an isolated test instance and pass --allow-write to run it.")
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 import mcp
 

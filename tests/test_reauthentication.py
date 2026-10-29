@@ -5,7 +5,7 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock
 
-SOURCE = Path(__file__).parents[1] / "custom_components/mcp_bridge/tools/integrations.py"
+SOURCE = Path(__file__).parents[1] / "custom_components/mcp_domora/tools/integrations.py"
 tree = ast.parse(SOURCE.read_text(encoding="utf-8"))
 functions = [
     node for node in tree.body

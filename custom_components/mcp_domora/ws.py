@@ -161,7 +161,7 @@ class WebSocketInvoker:
             self.refresh_token,
         ]
         if ActiveConnection.__init__.__code__.co_argcount > len(args) + 1:
-            args.append("mcp_bridge")
+            args.append("mcp_domora")
         return ActiveConnection(*args)
 
     @staticmethod

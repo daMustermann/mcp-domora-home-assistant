@@ -71,7 +71,7 @@ def _mcp_url(hass: Any) -> str:
 
 
 class MCPBridgeConfigFlow(ConfigFlow, domain=DOMAIN):
-    """Set up the MCP Bridge."""
+    """Set up the MCP Domora."""
 
     VERSION = 1
 

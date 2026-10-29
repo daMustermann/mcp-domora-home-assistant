@@ -1,11 +1,11 @@
-"""Constants for the MCP Bridge integration."""
+"""Constants for the MCP Domora integration."""
 
 from __future__ import annotations
 
 from typing import Final
 
-DOMAIN: Final = "mcp_bridge"
-NAME: Final = "MCP Bridge"
+DOMAIN: Final = "mcp_domora"
+NAME: Final = "MCP Domora"
 
 # Storage ---------------------------------------------------------------------
 STORAGE_KEY: Final = f"{DOMAIN}.auth"
@@ -47,7 +47,7 @@ SUPPORTED_PROTOCOL_VERSIONS: Final = (
     "2024-11-05",
 )
 LATEST_PROTOCOL_VERSION: Final = SUPPORTED_PROTOCOL_VERSIONS[0]
-SERVER_VERSION: Final = "0.2.0"
+SERVER_VERSION: Final = "0.3.0"
 SESSION_HEADER: Final = "Mcp-Session-Id"
 PROTOCOL_HEADER: Final = "MCP-Protocol-Version"
 SESSION_IDLE_TIMEOUT: Final = 3600

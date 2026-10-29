@@ -1,4 +1,4 @@
-"""Diagnostics for the MCP Bridge."""
+"""Diagnostics for the MCP Domora."""
 
 from __future__ import annotations
 

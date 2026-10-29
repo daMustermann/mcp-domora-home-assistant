@@ -1,6 +1,6 @@
 {
-  "domain": "mcp_bridge",
-  "name": "MCP Bridge",
+  "domain": "mcp_domora",
+  "name": "MCP Domora",
   "codeowners": [],
   "config_flow": true,
   "dependencies": ["http", "auth", "api", "websocket_api", "config", "device_automation"],
@@ -11,5 +11,5 @@
   "issue_tracker": "https://github.com/daMustermann/mcp-homeassistant/issues",
   "requirements": [],
   "single_config_entry": true,
-  "version": "0.2.0"
+  "version": "0.3.0"
 }

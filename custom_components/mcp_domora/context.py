@@ -54,7 +54,7 @@ class ToolContext:
             raise NotExposed(
                 "Not exposed to MCP clients: "
                 + ", ".join(sorted(blocked))
-                + ". Adjust the entity filter in the MCP Bridge options to allow it."
+                + ". Adjust the entity filter in the MCP Domora options to allow it."
             )
 
     def check_read(self, *entity_ids: str) -> None:

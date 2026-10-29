@@ -1,4 +1,4 @@
-"""Authentication for the MCP Bridge."""
+"""Authentication for the MCP Domora."""
 
 from .indieauth import InvalidClient, async_resolve_client
 from .store import AuthStore, OAuthClient, TokenRecord

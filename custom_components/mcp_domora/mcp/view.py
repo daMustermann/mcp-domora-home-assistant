@@ -2,10 +2,10 @@
 
 Two transports are served:
 
-* Streamable HTTP (`/mcp_bridge/mcp`), the current MCP transport. POSTs carry
+* Streamable HTTP (`/mcp_domora/mcp`), the current MCP transport. POSTs carry
   JSON-RPC and get a JSON response; GET opens an optional server-to-client SSE
   stream; DELETE ends the session.
-* HTTP+SSE (`/mcp_bridge/sse` plus `/mcp_bridge/messages/...`), the 2024-11-05
+* HTTP+SSE (`/mcp_domora/sse` plus `/mcp_domora/messages/...`), the 2024-11-05
   transport, still spoken by a number of clients and proxies.
 """
 
@@ -91,7 +91,7 @@ class _MCPViewBase(HomeAssistantView):
         runtime = _runtime(request)
         if runtime is None or not runtime.loaded:
             return json_response(
-                {"error": "server_error", "error_description": "MCP Bridge is not loaded"},
+                {"error": "server_error", "error_description": "MCP Domora is not loaded"},
                 status=503,
             )
 

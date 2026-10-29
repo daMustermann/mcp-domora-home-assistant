@@ -1,4 +1,4 @@
-"""Errors raised by MCP Bridge tools."""
+"""Errors raised by MCP Domora tools."""
 
 from __future__ import annotations
 

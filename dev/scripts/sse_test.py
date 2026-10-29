@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """Exercise the legacy HTTP+SSE transport (protocol 2024-11-05)."""
-import json, pathlib, threading, urllib.request, queue
+import json, os, threading, urllib.request, queue
+import mcp
 
-BASE = "http://localhost:8123"
-TOKEN = (pathlib.Path(__file__).parent.parent / ".token").read_text().strip()
+BASE = os.environ.get("BASE", "http://localhost:8123").rstrip("/")
+TOKEN = mcp.get_token()
 messages: queue.Queue = queue.Queue()
 endpoint_q: queue.Queue = queue.Queue()
 
 
 def read_stream():
-    req = urllib.request.Request(f"{BASE}/mcp_bridge/sse",
+    req = urllib.request.Request(f"{BASE}/mcp_domora/sse",
                                  headers={"Authorization": f"Bearer {TOKEN}",
                                           "Accept": "text/event-stream"})
     with urllib.request.urlopen(req) as resp:
@@ -49,6 +50,9 @@ print("initialize over SSE:", init["result"]["serverInfo"]["name"],
       "| protocol:", init["result"]["protocolVersion"])
 tools = send("tools/list")
 print("tools over SSE:", len(tools["result"]["tools"]))
+assert tools["result"]["tools"], "No tools returned"
 called = send("tools/call", {"name": "render_template",
                              "arguments": {"template": "{{ 6 * 7 }}"}})
 print("tool call over SSE:", called["result"]["content"][0]["text"][:80].replace("\n", " "))
+assert not called["result"].get("isError")
+assert "42" in called["result"]["content"][0]["text"]

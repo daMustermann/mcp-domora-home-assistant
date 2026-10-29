@@ -136,7 +136,7 @@ class ClientDocumentView(_BaseView):
         """Serve the client document."""
         runtime = _runtime(request)
         if runtime is None:
-            return html_response(page("Unavailable", "<h1>MCP Bridge is not loaded</h1>"), 503)
+            return html_response(page("Unavailable", "<h1>MCP Domora is not loaded</h1>"), 503)
         base = base_url(request.app["hass"], request)
         client = runtime.store.get_client(f"{base}{CLIENT_DOC_PATH}/{client_ref}")
         if client is None:
@@ -165,7 +165,7 @@ class RegistrationView(_BaseView):
         """Register a new public client."""
         runtime = _runtime(request)
         if runtime is None:
-            return oauth_error("temporarily_unavailable", "MCP Bridge is not loaded", 503)
+            return oauth_error("temporarily_unavailable", "MCP Domora is not loaded", 503)
         try:
             body = await request.json()
         except ValueError:
@@ -215,7 +215,7 @@ class AuthorizeView(_BaseView):
         hass: HomeAssistant = request.app["hass"]
         runtime = _runtime(request)
         if runtime is None:
-            return html_response(page("Unavailable", "<h1>MCP Bridge is not loaded</h1>"), 503)
+            return html_response(page("Unavailable", "<h1>MCP Domora is not loaded</h1>"), 503)
 
         query = request.query
         if query.get("response_type") != "code":
@@ -294,7 +294,7 @@ receives access to what your own user account may do.</p>
         hass: HomeAssistant = request.app["hass"]
         runtime = _runtime(request)
         if runtime is None:
-            return oauth_error("temporarily_unavailable", "MCP Bridge is not loaded", 503)
+            return oauth_error("temporarily_unavailable", "MCP Domora is not loaded", 503)
 
         form = await request.post()
         consent = runtime.consents.pop(str(form.get("consent", "")), None)
@@ -352,7 +352,7 @@ class CallbackView(_BaseView):
         hass: HomeAssistant = request.app["hass"]
         runtime = _runtime(request)
         if runtime is None:
-            return html_response(page("Unavailable", "<h1>MCP Bridge is not loaded</h1>"), 503)
+            return html_response(page("Unavailable", "<h1>MCP Domora is not loaded</h1>"), 503)
 
         pending = runtime.store.pending.pop(request.query.get("state", ""), None)
         if pending is None or pending.expired:
@@ -426,7 +426,7 @@ class TokenView(_BaseView):
         """Issue tokens for an authorization code or a refresh token."""
         runtime = _runtime(request)
         if runtime is None:
-            return oauth_error("temporarily_unavailable", "MCP Bridge is not loaded", 503)
+            return oauth_error("temporarily_unavailable", "MCP Domora is not loaded", 503)
         store = runtime.store
         form = await request.post()
         grant_type = form.get("grant_type")
@@ -525,7 +525,7 @@ class RevokeView(_BaseView):
         """Revoke a token. Always reports success, as the RFC requires."""
         runtime = _runtime(request)
         if runtime is None:
-            return oauth_error("temporarily_unavailable", "MCP Bridge is not loaded", 503)
+            return oauth_error("temporarily_unavailable", "MCP Domora is not loaded", 503)
         store = runtime.store
         token = str((await request.post()).get("token", ""))
         record = store.resolve_access_token(token) or store.resolve_refresh_token(token)
