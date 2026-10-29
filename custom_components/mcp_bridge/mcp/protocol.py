@@ -42,6 +42,11 @@ Orientation:
   calls any of them, which is how you control anything that has no dedicated tool.
 
 Editing configuration:
+- Before substantial or risky configuration changes, create a backup and verify in
+  `list_backups` and `get_backup_details` that it completed and covers the affected
+  data. If a suitable backup cannot be verified, explain that before proceeding.
+- `restore_backup` replaces existing data and may disconnect Home Assistant. Check
+  the chosen backup and location with the user before restoring.
 - Automations, scripts and scenes can be listed, read, created, updated and deleted.
   Always read the current config before updating it, and pass the complete new config.
 - `validate_automation_config` checks a config without saving it. Use it before writing.
@@ -56,6 +61,8 @@ Discovering what is possible:
   template before putting it in an automation.
 - `websocket_command` reaches any Home Assistant WebSocket API command if no dedicated
   tool covers what you need. `list_websocket_commands` enumerates them.
+- For an integration with expired credentials, use `start_reauthentication` and
+  `list_flows_in_progress`; the provider may require a browser login or a user code.
 
 Conventions:
 - Times are ISO 8601. Entity ids are `domain.object_id`.
@@ -191,7 +198,7 @@ class MCPServer:
         return {
             "protocolVersion": session.protocol_version,
             "capabilities": {
-                "tools": {"listChanged": True},
+                "tools": {"listChanged": False},
                 "resources": {"subscribe": False, "listChanged": False},
                 "prompts": {"listChanged": False},
                 "logging": {},
@@ -223,7 +230,7 @@ class MCPServer:
         except (ToolNotFound, ToolDisabled) as err:
             raise JSONRPCError(INVALID_PARAMS, str(err)) from err
 
-        _LOGGER.debug("Calling tool %s with %s", name, arguments)
+        _LOGGER.debug("Calling tool %s", name)
         try:
             result = await tool.handler(context, arguments)
         except MCPBridgeError as err:

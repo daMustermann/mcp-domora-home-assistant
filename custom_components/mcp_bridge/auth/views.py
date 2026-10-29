@@ -100,7 +100,7 @@ class AuthorizationServerMetadataView(_BaseView):
                 "revocation_endpoint_auth_methods_supported": ["none"],
                 "code_challenge_methods_supported": ["S256"],
                 "scopes_supported": list(DEFAULT_SCOPES),
-                "service_documentation": "https://github.com/mkenfenheuer/claude-mcp-homeassistant",
+                "service_documentation": "https://github.com/daMustermann/mcp-homeassistant",
             }
         )
 

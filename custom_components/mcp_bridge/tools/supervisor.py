@@ -13,7 +13,7 @@ from ..const import GROUP_SUPERVISOR
 from ..context import ToolContext
 from ..errors import InvalidInput, MCPBridgeError
 from ..registry import require, tool
-from ..schema import boolean, obj, schema, string
+from ..schema import array, boolean, obj, schema, string
 
 NOT_SUPERVISED = (
     "This installation has no Supervisor, so there are no add-ons. "
@@ -180,6 +180,32 @@ async def list_backups(context: ToolContext, args: dict[str, Any]) -> dict[str, 
 
 
 @tool(
+    name="list_backup_locations",
+    group=GROUP_SUPERVISOR,
+    title="List backup locations",
+    description="List the actual Home Assistant backup agent IDs for backup creation and restore.",
+    input_schema=schema({}),
+    admin=True,
+)
+async def list_backup_locations(context: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
+    context.check_admin()
+    return await context.ws.call("backup/agents/info")
+
+
+@tool(
+    name="get_backup_details",
+    group=GROUP_SUPERVISOR,
+    description="Get a backup's contents and available locations before restoring it.",
+    input_schema=schema({"backup_id": string("Backup ID from list_backups.")}, ["backup_id"]),
+    admin=True,
+)
+async def get_backup_details(context: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
+    context.check_admin()
+    (backup_id,) = require(args, "backup_id")
+    return await context.ws.call("backup/details", {"backup_id": backup_id})
+
+
+@tool(
     name="create_backup",
     group=GROUP_SUPERVISOR,
     title="Create a backup",
@@ -197,6 +223,12 @@ has started. Check `list_backups` afterwards to confirm it completed.
                 "Use the user's configured automatic backup settings. Default true.", default=True
             ),
             "password": string("Encrypt the backup with this password."),
+            "agent_ids": array("Backup locations from list_backup_locations. Required for explicit settings."),
+            "include_all_addons": boolean("Include all add-ons in an explicit backup. Default true."),
+            "include_database": boolean("Include the database. Default true."),
+            "include_folders": array(
+                "Folders to include. Defaults to share, addons/local, ssl and media."
+            ),
         }
     ),
     write=True,
@@ -205,17 +237,53 @@ has started. Check `list_backups` afterwards to confirm it completed.
 async def create_backup(context: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     """Create a backup."""
     context.check_admin()
-    if args.get("automatic_settings", True) and not args.get("password"):
-        try:
-            result = await context.ws.call("backup/generate_with_automatic_settings")
-            return {"started": True, "result": result}
-        except MCPBridgeError:
-            pass  # Fall through to an explicit backup.
+    explicit = any(key in args for key in ("name", "password", "agent_ids", "include_all_addons", "include_database", "include_folders"))
+    if args.get("automatic_settings", True) and not explicit:
+        result = await context.ws.call("backup/generate_with_automatic_settings")
+        return {"started": True, "result": result, "note": "Check list_backups for completion and errors before making changes."}
 
-    payload: dict[str, Any] = {"agent_ids": ["backup.local"]}
+    agents = args.get("agent_ids")
+    if not isinstance(agents, list) or not agents or not all(isinstance(item, str) and item for item in agents):
+        raise InvalidInput("Explicit backup settings require agent_ids from list_backup_locations.")
+    payload: dict[str, Any] = {
+        "agent_ids": agents,
+        "include_homeassistant": True,
+        "include_all_addons": args.get("include_all_addons", True),
+        "include_database": args.get("include_database", True),
+        "include_folders": args.get("include_folders", ["share", "addons/local", "ssl", "media"]),
+    }
     if name := args.get("name"):
         payload["name"] = name
     if password := args.get("password"):
         payload["password"] = password
     result = await context.ws.call("backup/generate", payload)
-    return {"started": True, "result": result}
+    return {"started": True, "result": result, "note": "Check list_backups for completion and errors before making changes."}
+
+
+@tool(
+    name="restore_backup",
+    group=GROUP_SUPERVISOR,
+    title="Restore a backup",
+    description="Restore a chosen Home Assistant backup. This replaces current data and may disconnect the server; inspect get_backup_details first and tell the user what will be restored.",
+    input_schema=schema({
+        "backup_id": string("Backup ID from list_backups."),
+        "agent_id": string("Location containing this backup, from get_backup_details."),
+        "password": string("Backup encryption key, if needed."),
+        "restore_addons": array("Add-on IDs to restore; omit to use Home Assistant defaults."),
+        "restore_folders": array("Folders to restore; omit to use Home Assistant defaults."),
+        "restore_database": boolean("Restore the database. Default true."),
+        "restore_homeassistant": boolean("Restore Home Assistant. Default true."),
+    }, ["backup_id", "agent_id"]),
+    write=True,
+    admin=True,
+    destructive=True,
+)
+async def restore_backup(context: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
+    context.check_admin()
+    backup_id, agent_id = require(args, "backup_id", "agent_id")
+    payload = {"backup_id": backup_id, "agent_id": agent_id}
+    for key in ("password", "restore_addons", "restore_folders", "restore_database", "restore_homeassistant"):
+        if key in args:
+            payload[key] = args[key]
+    result = await context.ws.call("backup/restore", payload, timeout=120)
+    return {"requested": True, "result": result, "note": "The connection may be interrupted; verify the restored system after it returns."}

@@ -330,18 +330,18 @@ def _device_summary(context: ToolContext, device: dr.DeviceEntry) -> dict[str, A
     return {
         "device_id": device.id,
         "name": device.name_by_user or device.name,
-        "manufacturer": device.manufacturer,
-        "model": device.model,
-        "sw_version": device.sw_version,
-        "hw_version": device.hw_version,
+        "manufacturer": getattr(device, "manufacturer", None),
+        "model": getattr(device, "model", None),
+        "sw_version": getattr(device, "sw_version", None),
+        "hw_version": getattr(device, "hw_version", None),
         "area_id": device.area_id,
         "area": context.exposure.area_name(device.area_id),
         "labels": sorted(device.labels),
         "disabled_by": device.disabled_by,
-        "via_device_id": device.via_device_id,
-        "config_entries": sorted(device.config_entries),
-        "connections": [list(connection) for connection in device.connections],
-        "identifiers": [list(identifier) for identifier in device.identifiers],
+        "via_device_id": getattr(device, "via_device_id", None),
+        "config_entries": [device.config_entry_id] if device.config_entry_id else [],
+        "connections": [list(connection) for connection in getattr(device, "connections", ())],
+        "identifiers": [list(identifier) for identifier in getattr(device, "identifiers", ())],
     }
 
 

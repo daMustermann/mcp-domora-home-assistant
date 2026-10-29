@@ -222,7 +222,11 @@ async def list_devices(context: ToolContext, args: dict[str, Any]) -> dict[str, 
             continue
         if args.get("disabled_only") and not device.disabled_by:
             continue
-        text = f"{device.name_by_user or ''} {device.name or ''} {device.manufacturer or ''} {device.model or ''}".lower()
+        text = (
+            f"{device.name_by_user or ''} {device.name or ''} "
+            f"{getattr(device, 'manufacturer', None) or ''} "
+            f"{getattr(device, 'model', None) or ''}"
+        ).lower()
         if search and search not in text:
             continue
 
@@ -230,7 +234,7 @@ async def list_devices(context: ToolContext, args: dict[str, Any]) -> dict[str, 
         if integration:
             domains = {
                 config_entry.domain
-                for entry_id in device.config_entries
+                for entry_id in ([device.config_entry_id] if device.config_entry_id else [])
                 if (config_entry := hass.config_entries.async_get_entry(entry_id))
             }
             if integration not in domains:

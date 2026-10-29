@@ -72,7 +72,7 @@ def _flow_result(result: dict[str, Any]) -> dict[str, Any]:
     }
     if (data_schema := result.get("data_schema")) is not None:
         payload["fields"] = _serialise_schema(data_schema)
-    for key in ("errors", "description_placeholders", "reason", "title", "preview"):
+    for key in ("errors", "description_placeholders", "reason", "title", "preview", "url"):
         if result.get(key):
             payload[key] = result[key]
     if result.get("type") is not None and payload["type"] == "create_entry":
@@ -84,6 +84,11 @@ def _flow_result(result: dict[str, Any]) -> dict[str, Any]:
         payload["next"] = (
             "Fill in `fields` and call continue_flow with this flow_id and your values. "
             "Ask the user for anything secret - never guess credentials."
+        )
+    elif payload["type"] == "external":
+        payload["next"] = (
+            "Open the provided URL in the user's browser and complete the provider "
+            "login, then resume the flow in Home Assistant."
         )
     return payload
 
@@ -216,6 +221,57 @@ async def list_available_integrations(context: ToolContext, args: dict[str, Any]
         "total": len(domains),
         "domains": context.limit(matching),
     }
+
+
+@tool(
+    name="start_reauthentication",
+    group=GROUP_INTEGRATIONS,
+    title="Start integration reauthentication",
+    description=(
+        "Start Home Assistant's reauthentication flow for an existing integration. "
+        "Use continue_flow for the returned steps. Provider login, email codes or "
+        "MFA may require the user's browser or help."
+    ),
+    input_schema=schema(
+        {"entry_id": string("Existing config entry ID from list_integrations.")},
+        ["entry_id"],
+    ),
+    write=True,
+    admin=True,
+)
+async def start_reauthentication(context: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
+    """Start a reauth flow linked to the existing entry, and return its first step."""
+    context.check_admin()
+    (entry_id,) = require(args, "entry_id")
+    entry = context.hass.config_entries.async_get_entry(entry_id)
+    if entry is None:
+        raise InvalidInput(f"No config entry {entry_id!r}")
+    for flow in context.hass.config_entries.flow.async_progress():
+        flow_context = flow.get("context") or {}
+        if flow_context.get("entry_id") == entry_id and flow_context.get("source") in (
+            "reauth", "reconfigure"
+        ):
+            return {
+                "already_in_progress": True,
+                "flow_id": flow["flow_id"],
+                "next": "Use continue_flow with this flow ID to inspect or continue it.",
+            }
+    try:
+        result = await context.hass.config_entries.flow.async_init(
+            entry.domain,
+            context={
+                "source": "reauth",
+                "entry_id": entry_id,
+                "title_placeholders": {"name": entry.title},
+                "unique_id": entry.unique_id,
+            },
+            data=dict(entry.data),
+        )
+    except Exception as err:  # noqa: BLE001 - explain unsupported providers
+        raise MCPBridgeError(f"Could not start reauthentication: {err}") from err
+    if result.get("flow_id"):
+        context.runtime_flows[result["flow_id"]] = "config"
+    return _flow_result(result)
 
 
 @tool(
