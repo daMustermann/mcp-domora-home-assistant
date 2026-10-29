@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1 — Repository rename
+
+- Update the GitHub, HACS, documentation and issue tracker links to
+  `daMustermann/mcp-domora-home-assistant`.
+
 ## 0.3.0 — MCP Domora
 
 - Introduce the MCP Domora name, `mcp_domora` integration domain and HTTP paths.

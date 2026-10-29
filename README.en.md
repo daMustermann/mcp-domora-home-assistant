@@ -4,10 +4,10 @@ Connect Home Assistant to Codex and other MCP clients through your own Home Assi
 
 [Deutsch](README.md) · English
 
-> **Status:** Version 0.3.0 · Home Assistant 2026.10 or later · MIT license
+> **Status:** Version 0.3.1 · Home Assistant 2026.10 or later · MIT license
 > The connection, OAuth, and backup creation were tested on an isolated Home Assistant Core 2026.10.4 instance. HAOS restore and individual cloud-provider login flows have not yet been tested end to end.
 
-See the [changelog](CHANGELOG.md) for version history and [GitHub Releases](https://github.com/daMustermann/mcp-homeassistant/releases) for published versions.
+See the [changelog](CHANGELOG.md) for version history and [GitHub Releases](https://github.com/daMustermann/mcp-domora-home-assistant/releases) for published versions.
 
 ## Capabilities
 
@@ -37,7 +37,7 @@ The bridge runs **inside Home Assistant Core** and is unavailable when Core is d
 ### HACS
 
 1. In HACS, open **⋮ → Custom repositories**.
-2. Add `https://github.com/daMustermann/mcp-homeassistant` with category **Integration**.
+2. Add `https://github.com/daMustermann/mcp-domora-home-assistant` with category **Integration**.
 3. Install **MCP Domora** and restart Home Assistant.
 4. Under **Settings → Devices & services → Add integration**, search for **MCP Domora** and complete setup.
 

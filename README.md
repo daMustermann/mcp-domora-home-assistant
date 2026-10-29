@@ -4,10 +4,10 @@ Deutsch · [English](README.en.md)
 
 Verbinde Home Assistant mit Codex und anderen MCP-Clients – direkt über deine eigene Home-Assistant-Instanz. Der Agent kann Zustände lesen, Geräte steuern, Automationen bearbeiten, Backups verwalten und bei der erneuten Anmeldung von Integrationen helfen.
 
-> **Status:** Version 0.3.0 · Home Assistant 2026.10 oder neuer · MIT-Lizenz
+> **Status:** Version 0.3.1 · Home Assistant 2026.10 oder neuer · MIT-Lizenz
 > Die Verbindung, OAuth und das Erstellen eines Backups wurden mit Home Assistant Core 2026.10.4 in einer getrennten Testinstanz geprüft. Eine Wiederherstellung auf HAOS und die Anmeldeflüsse einzelner Cloud-Anbieter sind noch nicht Ende zu Ende getestet.
 
-Änderungen pro Version stehen im [Changelog](CHANGELOG.md); veröffentlichte Versionen findest du unter [GitHub Releases](https://github.com/daMustermann/mcp-homeassistant/releases).
+Änderungen pro Version stehen im [Changelog](CHANGELOG.md); veröffentlichte Versionen findest du unter [GitHub Releases](https://github.com/daMustermann/mcp-domora-home-assistant/releases).
 
 ## Möglichkeiten
 
@@ -37,7 +37,7 @@ Der Server läuft **innerhalb von Home Assistant Core**. Wenn Core nicht erreich
 ### Über HACS
 
 1. In HACS das Menü **⋮ → Benutzerdefinierte Repositories** öffnen.
-2. `https://github.com/daMustermann/mcp-homeassistant` als Repository hinzufügen und die Kategorie **Integration** wählen.
+2. `https://github.com/daMustermann/mcp-domora-home-assistant` als Repository hinzufügen und die Kategorie **Integration** wählen.
 3. **MCP Domora** installieren und Home Assistant neu starten.
 4. Unter **Einstellungen → Geräte & Dienste → Integration hinzufügen** nach **MCP Domora** suchen und die Einrichtung abschließen.
 
