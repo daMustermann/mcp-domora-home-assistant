@@ -61,13 +61,13 @@ DEFAULT_OPTIONS: dict[str, Any] = {
 
 
 def _mcp_url(hass: Any) -> str:
-    """The URL to hand to an MCP client."""
-    for kwargs in ({"prefer_external": True}, {"allow_internal": True}):
-        try:
-            return f"{get_url(hass, **kwargs).rstrip('/')}{MCP_PATH}"
-        except NoURLAvailableError:
-            continue
-    return MCP_PATH
+    """Show a local address without choosing an unrelated cloud endpoint."""
+    try:
+        base = get_url(hass, allow_internal=True, allow_external=False, allow_cloud=False)
+    except NoURLAvailableError:
+        # A path is preferable to a guessed or unreachable external address.
+        return MCP_PATH
+    return f"{base.rstrip('/')}{MCP_PATH}"
 
 
 class MCPBridgeConfigFlow(ConfigFlow, domain=DOMAIN):

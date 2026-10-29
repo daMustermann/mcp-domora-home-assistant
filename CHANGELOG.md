@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.2 — Local connection address
+
+- Prefer a local Home Assistant URL in setup and options instead of a cloud or external URL.
+- Document how to connect over the local network.
+
 ## 0.4.1 — MCP Domora branding
 
 - Add local Home Assistant brand icons for light and dark themes, in standard and high resolution.
