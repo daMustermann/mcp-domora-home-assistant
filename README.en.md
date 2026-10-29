@@ -1,10 +1,12 @@
 # MCP Domora for Home Assistant
 
+![MCP Domora logo](custom_components/mcp_domora/brand/icon.png)
+
 Connect Home Assistant to Codex and other MCP clients through your own Home Assistant instance. An agent can read states, control devices, edit automations, manage backups, and assist with integration reauthentication.
 
 [Deutsch](README.md) · English
 
-> **Status:** Version 0.4.0 · Home Assistant 2026.10 or later · MIT license
+> **Status:** Version 0.4.1 · Home Assistant 2026.10 or later · MIT license
 > The connection, OAuth, and backup creation were tested on an isolated Home Assistant Core 2026.10.4 instance. HAOS restore and individual cloud-provider login flows have not yet been tested end to end.
 
 See the [changelog](CHANGELOG.md) for version history and [GitHub Releases](https://github.com/daMustermann/mcp-domora-home-assistant/releases) for published versions.
@@ -124,6 +126,7 @@ Read-only mode is a useful starting point. Entity filters apply to many dedicate
 - **Login fails:** Check that the client can reach the configured hostname and the OAuth callback. For reverse proxies, configure Home Assistant's proxy settings appropriately.
 - **A tool is missing:** Check tool groups, individual tools, read-only mode, and administrator access. Some tools require Supervisor or other Home Assistant integrations.
 - **A backup is missing:** The job may still be running, or the destination may have reported an error. Check `list_backups` and `get_backup_details`.
+- **Logo missing in HACS:** Home Assistant loads the logo from the integration. Older HACS interfaces may still display a placeholder; see [HACS issue #5402](https://github.com/hacs/integration/issues/5402).
 - **Home Assistant is down:** MCP Domora runs inside Core. Use Home Assistant's normal recovery methods when Core is unavailable.
 
 ## Development and tests

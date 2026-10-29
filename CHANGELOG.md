@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1 — MCP Domora branding
+
+- Add local Home Assistant brand icons for light and dark themes, in standard and high resolution.
+- Add the logo to the German and English READMEs.
+
 ## 0.4.0 — App development
 
 - Add project workspaces for creating and editing Home Assistant app source files.

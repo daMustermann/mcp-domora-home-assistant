@@ -1,10 +1,12 @@
 # MCP Domora für Home Assistant
 
+![MCP Domora Logo](custom_components/mcp_domora/brand/icon.png)
+
 Deutsch · [English](README.en.md)
 
 Verbinde Home Assistant mit Codex und anderen MCP-Clients – direkt über deine eigene Home-Assistant-Instanz. Der Agent kann Zustände lesen, Geräte steuern, Automationen bearbeiten, Backups verwalten und bei der erneuten Anmeldung von Integrationen helfen.
 
-> **Status:** Version 0.4.0 · Home Assistant 2026.10 oder neuer · MIT-Lizenz
+> **Status:** Version 0.4.1 · Home Assistant 2026.10 oder neuer · MIT-Lizenz
 > Die Verbindung, OAuth und das Erstellen eines Backups wurden mit Home Assistant Core 2026.10.4 in einer getrennten Testinstanz geprüft. Eine Wiederherstellung auf HAOS und die Anmeldeflüsse einzelner Cloud-Anbieter sind noch nicht Ende zu Ende getestet.
 
 Änderungen pro Version stehen im [Changelog](CHANGELOG.md); veröffentlichte Versionen findest du unter [GitHub Releases](https://github.com/daMustermann/mcp-domora-home-assistant/releases).
@@ -124,6 +126,7 @@ Zum Kennenlernen ist der Schreibschutz ein guter Start. Beachte: Entity-Filter g
 - **Anmeldung funktioniert nicht:** Prüfen, ob der Client den verwendeten Hostnamen erreicht und ob der OAuth-Callback des Clients erreichbar ist. Bei Reverse-Proxies müssen Home Assistants Proxy-Einstellungen zum Aufbau passen.
 - **Tool fehlt:** Toolgruppe, einzelne Tools, Schreibschutz und Administratorstatus in den Optionen prüfen. Einige Funktionen benötigen Supervisor oder weitere Home-Assistant-Integrationen.
 - **Backup nicht sichtbar:** Der Auftrag läuft möglicherweise noch oder der gewählte Speicherort hat einen Fehler gemeldet. `list_backups` und `get_backup_details` prüfen.
+- **Logo in HACS fehlt:** Home Assistant lädt das Logo lokal aus der Integration. Ältere HACS-Oberflächen können trotzdem einen Platzhalter anzeigen; siehe [HACS-Ausgabe #5402](https://github.com/hacs/integration/issues/5402).
 - **Integration nicht erreichbar:** Die Bridge läuft nur, solange Home Assistant Core funktioniert. Bei einem Core-Ausfall die regulären Home-Assistant-Wiederherstellungswege verwenden.
 
 ## Entwicklung und Tests
