@@ -148,12 +148,9 @@ async def manage_addon(context: ToolContext, args: dict[str, Any]) -> dict[str, 
                 "hostname": info.hostname,
             }
         case "logs":
-            logs = await client.addons.addon_logs(slug) if hasattr(client.addons, "addon_logs") else None
-            if logs is None:
-                raise MCPBridgeError(
-                    "This Supervisor client cannot fetch add-on logs; open the add-on page instead."
-                )
-            return {"slug": slug, "logs": logs}
+            from .addon_development import get_addon_logs  # noqa: PLC0415
+
+            return await get_addon_logs(context, {"slug": slug})
         case "start":
             await client.addons.start_addon(slug)
         case "stop":

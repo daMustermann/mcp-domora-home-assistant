@@ -4,7 +4,7 @@ Deutsch · [English](README.en.md)
 
 Verbinde Home Assistant mit Codex und anderen MCP-Clients – direkt über deine eigene Home-Assistant-Instanz. Der Agent kann Zustände lesen, Geräte steuern, Automationen bearbeiten, Backups verwalten und bei der erneuten Anmeldung von Integrationen helfen.
 
-> **Status:** Version 0.3.1 · Home Assistant 2026.10 oder neuer · MIT-Lizenz
+> **Status:** Version 0.4.0 · Home Assistant 2026.10 oder neuer · MIT-Lizenz
 > Die Verbindung, OAuth und das Erstellen eines Backups wurden mit Home Assistant Core 2026.10.4 in einer getrennten Testinstanz geprüft. Eine Wiederherstellung auf HAOS und die Anmeldeflüsse einzelner Cloud-Anbieter sind noch nicht Ende zu Ende getestet.
 
 Änderungen pro Version stehen im [Changelog](CHANGELOG.md); veröffentlichte Versionen findest du unter [GitHub Releases](https://github.com/daMustermann/mcp-domora-home-assistant/releases).
@@ -17,6 +17,7 @@ Verbinde Home Assistant mit Codex und anderen MCP-Clients – direkt über deine
 | Automationen | Auflisten, prüfen, erstellen, ändern, auslösen und Traces untersuchen |
 | Skripte und Szenen | Lesen, erstellen, bearbeiten, ausführen und löschen |
 | Home Assistant | Integrationen, Helfer, Dashboards, Logbuch, Historie und Reparaturen verwalten |
+| Add-on-Entwicklung | Projekt anlegen und bearbeiten, App-Repository hinzufügen, Store laden, installieren, Buildstatus und Logs abrufen |
 | Backup | Speicherorte ermitteln, Backup starten, Details abrufen und Wiederherstellung anfordern |
 | Anmeldung | Re-Authentifizierungsflows bestehender Integrationen starten und fortsetzen |
 | Erweiterte Funktionen | Templates auswerten und Home Assistants WebSocket-API verwenden |
@@ -89,6 +90,16 @@ Für größere Änderungen sollte der Agent zuerst ein Backup erstellen und dess
 4. `restore_backup` fordert die Wiederherstellung einer ausgewählten Sicherung von einem angegebenen Speicherort an. Dabei können aktuelle Daten überschrieben und die Verbindung unterbrochen werden.
 
 Der Agent erhält die Anweisung, vor größeren Änderungen eine geeignete Sicherung zu prüfen; dies ist keine technisch erzwungene automatische Sicherung vor jedem Toolaufruf. Backup-Umfang, verfügbare Speicherorte und Verschlüsselung hängen von deiner Home-Assistant-Konfiguration ab. Bewahre den Verschlüsselungsschlüssel und nach Möglichkeit eine Kopie der Sicherung außerhalb des Systems auf. Teste eine Wiederherstellung auf einer geeigneten Testinstallation.
+
+## Add-ons mit einem Coding-Agenten entwickeln
+
+`create_addon_project` erstellt ein bearbeitbares App-Repository mit `repository.yaml`, `config.yaml`, `Dockerfile` und `run.sh` unter `/config/mcp_domora_projects/<slug>`. Mit `list_addon_projects`, `list_addon_project_files`, `read_addon_project_file`, `write_addon_project_files` und `delete_addon_project_file` kann der Agent den UTF-8-Quellcode bearbeiten.
+
+Der Supervisor kann diesen Projektordner **nicht automatisch** als lokales Add-on sehen: Er verwendet sein eigenes `local_apps`-Verzeichnis, das Home Assistant Core normalerweise nicht eingebunden hat. Das Projekt muss deshalb separat in ein für den Supervisor erreichbares Git-Repository veröffentlicht oder der App-Unterordner nach `local_apps` kopiert werden. Domora veröffentlicht keine Git-Repositories und kopiert keine Dateien in einen nicht eingebundenen Ordner.
+
+Danach kann der Agent über `add_addon_repository`, `reload_addon_store` und `list_addon_store` das veröffentlichte Repository einbinden und das Add-on finden. `install_addon` startet die Installation im Hintergrund; mit `get_addon_job` wird deren Ergebnis geprüft. `get_addon_info`, `get_addon_logs` und `rebuild_addon` helfen beim Testen. Für `manage_addon` mit Start/Stopp muss in den Optionen **Allow disruptive tools** aktiviert sein. Ein Rebuild kann lange dauern; der MCP-Client benötigt dafür einen entsprechend langen Tool-Timeout.
+
+Diese Werkzeuge benötigen einen Administrator; die Supervisor-Aufrufe benötigen HAOS oder eine unterstützte überwachte Installation. Projektbearbeitung und Supervisor-Aufrufe wurden bislang nicht Ende zu Ende auf HAOS getestet.
 
 ## Abgelaufene Anmeldungen
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.0 — App development
+
+- Add project workspaces for creating and editing Home Assistant app source files.
+- Add Supervisor store discovery, repository registration, app installation,
+  job inspection, app details, rebuild and log retrieval.
+- Fix app log access for the current Home Assistant Supervisor client.
+- Document the separate publication/copy step required between project workspaces
+  and the Supervisor's local app directory.
+
+The project tools were tested on an isolated Home Assistant Core instance. Supervisor
+requests have unit tests, but installation and rebuild have not been tested on HAOS.
+
 ## 0.3.1 — Repository rename
 
 - Update the GitHub, HACS, documentation and issue tracker links to

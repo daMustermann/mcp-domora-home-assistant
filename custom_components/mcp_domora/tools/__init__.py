@@ -6,6 +6,7 @@ the MCP tool list and the options UI both read from the registry.
 """
 
 from . import (  # noqa: F401
+    addon_development,
     automations,
     dashboards,
     events,
@@ -24,6 +25,7 @@ from . import (  # noqa: F401
 )
 
 __all__ = [
+    "addon_development",
     "automations",
     "dashboards",
     "events",

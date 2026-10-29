@@ -63,6 +63,12 @@ Discovering what is possible:
   tool covers what you need. `list_websocket_commands` enumerates them.
 - For an integration with expired credentials, use `start_reauthentication` and
   `list_flows_in_progress`; the provider may require a browser login or a user code.
+- For a new Home Assistant app, `create_addon_project` creates an editable project;
+  use the addon project file tools to develop it. The project workspace is not the
+  Supervisor's local_apps directory. Publish it to an accessible Git repository or
+  copy the app folder to local_apps before reloading the store and installing it.
+- After `install_addon`, follow its Supervisor job before starting the app. Use
+  `get_addon_info` and `get_addon_logs` to diagnose problems.
 
 Conventions:
 - Times are ISO 8601. Entity ids are `domain.object_id`.

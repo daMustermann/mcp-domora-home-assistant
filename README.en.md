@@ -4,7 +4,7 @@ Connect Home Assistant to Codex and other MCP clients through your own Home Assi
 
 [Deutsch](README.md) · English
 
-> **Status:** Version 0.3.1 · Home Assistant 2026.10 or later · MIT license
+> **Status:** Version 0.4.0 · Home Assistant 2026.10 or later · MIT license
 > The connection, OAuth, and backup creation were tested on an isolated Home Assistant Core 2026.10.4 instance. HAOS restore and individual cloud-provider login flows have not yet been tested end to end.
 
 See the [changelog](CHANGELOG.md) for version history and [GitHub Releases](https://github.com/daMustermann/mcp-domora-home-assistant/releases) for published versions.
@@ -17,6 +17,7 @@ See the [changelog](CHANGELOG.md) for version history and [GitHub Releases](http
 | Automations | List, validate, create, edit, trigger, and inspect traces |
 | Scripts and scenes | Read, create, edit, run, and delete |
 | Home Assistant | Manage integrations, helpers, dashboards, logbook, history, and repairs |
+| App development | Create and edit a project, add an app repository, reload the store, install, inspect build status and logs |
 | Backups | Discover destinations, create backups, inspect details, and request a restore |
 | Sign-in | Start and continue reauthentication flows for existing integrations |
 | Advanced | Render templates and call Home Assistant's WebSocket API |
@@ -89,6 +90,16 @@ Before substantial changes, the agent should create a backup and check its compl
 4. `restore_backup` requests restoration of a selected backup from a selected location. A restore may overwrite current data and disconnect Home Assistant.
 
 The agent is instructed to check for a suitable backup before major changes; the server does not enforce an automatic backup before every tool call. Coverage, destinations, and encryption depend on your Home Assistant configuration. Keep the encryption key and, where possible, a copy of the backup outside the system. Test restoration on a suitable test system.
+
+## Develop apps with a coding agent
+
+`create_addon_project` creates an editable app repository with `repository.yaml`, `config.yaml`, `Dockerfile` and `run.sh` under `/config/mcp_domora_projects/<slug>`. The agent can edit UTF-8 source files with `list_addon_projects`, `list_addon_project_files`, `read_addon_project_file`, `write_addon_project_files`, and `delete_addon_project_file`.
+
+The Supervisor **cannot automatically see** this project as a local app: it uses its own `local_apps` directory, which normally is not mounted in Home Assistant Core. Publish the project to a Git repository reachable by the Supervisor or copy the app subfolder to `local_apps` separately. Domora does not publish Git repositories or copy files into an unmounted directory.
+
+Then use `add_addon_repository`, `reload_addon_store`, and `list_addon_store` to add and find the published app. `install_addon` starts installation in the background; check `get_addon_job` for its result. `get_addon_info`, `get_addon_logs`, and `rebuild_addon` help with testing. Enable **Allow disruptive tools** for start/stop through `manage_addon`. A rebuild can take a long time; configure an appropriate MCP client tool timeout.
+
+These tools require an administrator; Supervisor operations require HAOS or a supported supervised installation. Project editing and Supervisor operations have not yet been tested end to end on HAOS.
 
 ## Expired credentials
 
